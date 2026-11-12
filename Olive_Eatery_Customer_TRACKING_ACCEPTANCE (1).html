@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en-ZA">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Olive Eatery, Clara Anna Fontein</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cellipse cx='16' cy='16' rx='9' ry='12' fill='%234B5B2A'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;700&family=Young+Serif&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<style>
+:root{--bg:#F6F6F1;--surface:#fff;--ink:#1D2319;--muted:#5F675A;--line:#D9DBCF;--olive:#4B5B2A;--on-olive:#fff;--new:#A33B2D;--cook:#9A6A0B;--ready:#3E7A2B;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141813;--surface:#1C211A;--ink:#ECEFE6;--muted:#9AA295;--line:#2F362B;--olive:#A5B966;--on-olive:#141813;--new:#E0745F;--cook:#D9A441;--ready:#7DBB62;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#141813;--surface:#1C211A;--ink:#ECEFE6;--muted:#9AA295;--line:#2F362B;--olive:#A5B966;--on-olive:#141813;--new:#E0745F;--cook:#D9A441;--ready:#7DBB62;color-scheme:dark}
+*,*::before,*::after{box-sizing:border-box;margin:0}
+[hidden]{display:none!important}
+html{background:var(--bg);color:var(--ink);scroll-padding-top:env(safe-area-inset-top,0px)}
+body{font:400 1rem/1.55 Figtree,system-ui,sans-serif;min-height:100vh;background:var(--bg)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:10}
+h1,h2,h3{font-family:"Young Serif",Georgia,serif;font-weight:400;line-height:1.2}
+h1{font-size:clamp(2rem,5vw,3rem);margin-bottom:1rem}h2{font-size:1.4rem;margin-bottom:.5rem}h3{font-size:1.1rem}
+a{color:inherit}
+.wrap{max-width:960px;margin:0 auto;padding:0 20px}
+.row{display:flex;align-items:center}.between{justify-content:space-between}.gap{gap:12px;flex-wrap:wrap}
+.muted{color:var(--muted)}.small{font-size:.82rem;color:var(--muted)}
+.btn{background:var(--olive);color:var(--on-olive);border:1px solid var(--olive);border-radius:4px;padding:.6rem 1.1rem;font:500 .95rem Figtree,sans-serif;cursor:pointer}
+.btn.alt{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn.danger{background:transparent;color:var(--new);border-color:var(--new)}
+.btn.sm{padding:.35rem .8rem;font-size:.85rem}.btn[disabled]{opacity:.5}
+.lnk{background:none;border:0;font:inherit;color:inherit;cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:3px}
+:focus-visible{outline:2px solid var(--olive);outline-offset:2px}
+label{display:block;font-weight:500;font-size:.9rem;margin-bottom:12px}
+input,select{display:block;width:100%;margin-top:4px;padding:.6rem .7rem;border:1px solid var(--line);border-radius:4px;background:var(--surface);color:var(--ink);font:inherit}
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:11;background:var(--bg);border-bottom:1px solid var(--line);padding-top:0}
+.top .row{height:64px}.top nav{display:flex;gap:22px;align-items:center}
+.brand{font-family:"Young Serif",Georgia,serif;font-size:1.3rem;text-decoration:none}
+main{padding-top:48px;padding-bottom:64px;min-height:60vh}
+.hero{max-width:640px;padding:32px 0 48px}.lead{font-size:1.15rem;margin-bottom:1.5rem}
+.info{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:28px;border-top:1px solid var(--line);padding-top:28px}
+.tabs{display:flex;gap:20px;overflow-x:auto;border-bottom:1px solid var(--line);margin-bottom:24px}
+.tabs button{background:none;border:0;border-bottom:2px solid transparent;padding:8px 0;font:500 .95rem Figtree,sans-serif;color:var(--muted);cursor:pointer;white-space:nowrap}
+.tabs button.on{color:var(--ink);border-bottom-color:var(--olive)}
+.cat{margin-top:32px}
+.item{display:grid;grid-template-columns:1fr auto;gap:4px 24px;padding:16px 0;border-bottom:1px solid var(--line)}
+.item .right{display:flex;align-items:center;gap:14px}.price{font-weight:700}
+.shade{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:40;display:none}.shade.on{display:block}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(420px,100%);background:var(--surface);z-index:50;overflow-y:auto;padding:20px;padding-top:calc(20px + env(safe-area-inset-top,0px));transform:translateX(100%);visibility:hidden;transition:transform .2s,visibility .2s}
+.drawer.open{transform:none;visibility:visible}
+.cline{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.qty{display:flex;align-items:center;gap:8px}.qty button{width:28px;height:28px;border:1px solid var(--line);background:none;color:var(--ink);border-radius:4px;cursor:pointer}
+.tot{display:flex;justify-content:space-between;padding:6px 0}.tot.big{font-weight:700;font-size:1.1rem;margin-bottom:20px}
+.panel{background:var(--surface);border:1px solid var(--line);padding:24px;margin-bottom:32px}
+.steps{list-style:none;padding:0;margin:24px 0 8px}
+.steps li{position:relative;padding:0 0 24px 34px;color:var(--muted)}
+.steps li::before{content:"";position:absolute;left:0;top:4px;width:14px;height:14px;border-radius:50%;border:2px solid var(--line);background:var(--surface)}
+.steps li::after{content:"";position:absolute;left:6px;top:20px;bottom:-4px;width:2px;background:var(--line)}
+.steps li:last-child::after{display:none}
+.steps li.done::before{background:var(--olive);border-color:var(--olive)}.steps li.done::after{background:var(--olive)}
+.steps li.now::before{border-color:var(--olive);box-shadow:0 0 0 4px color-mix(in srgb,var(--olive) 25%,transparent)}
+.steps li.done,.steps li.now{color:var(--ink)}
+.find{border-top:1px solid var(--line);padding-top:28px;max-width:520px}.find .gap>label{flex:1;min-width:180px}
+.bar{background:var(--ink);color:var(--bg);position:sticky;top:env(safe-area-inset-top,0px);z-index:11}.bar .row{height:60px}.bar .lnk{color:var(--bg)}.bar .small{color:inherit;opacity:.7}
+.summary{padding:28px 0 8px;font-family:"Young Serif",Georgia,serif;font-size:1.4rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;padding-bottom:64px}
+.ticket{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--c);padding:16px;display:flex;flex-direction:column;gap:12px}
+.st{font-weight:700;color:var(--c)}
+.note{background:color-mix(in srgb,var(--cook) 14%,transparent);padding:6px 10px;border-radius:4px;font-size:.9rem}
+.lines{list-style:none;padding:0;border-top:1px solid var(--line)}.lines li{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--line);font-size:.92rem}
+.ticket .row.gap .btn{flex:1}.empty{grid-column:1/-1;padding:32px 0}
+.login{max-width:380px;margin:12vh auto;padding:0 20px}
+footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:.9rem;color:var(--muted)}
+#toasts{position:fixed;bottom:calc(16px + env(safe-area-inset-bottom,0px));right:16px;z-index:99;display:grid;gap:8px}
+.toast{background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:4px;font-size:.9rem;max-width:300px}
+@media(max-width:560px){.top nav{gap:14px}.item{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<!--
+Supabase setup (optional, run once). Without it the app stores orders in the browser so you can test both sides.
+create sequence order_seq start 1001;
+create table orders(id uuid primary key default gen_random_uuid(), order_number text unique default 'OE-'||nextval('order_seq'), customer_name text, customer_phone text, fulfilment text, address text, notes text, items jsonb, delivery_fee numeric, total numeric, status text default 'received', history jsonb, created_at timestamptz default now());
+alter table orders enable row level security;
+create policy staff_all on orders for all to authenticated using (true) with check (true);
+create function place_order(p jsonb) returns orders language sql security definer as $$ insert into orders(customer_name,customer_phone,fulfilment,address,notes,items,delivery_fee,total,history) values(p->>'customer_name',p->>'customer_phone',p->>'fulfilment',p->>'address',p->>'notes',p->'items',(p->>'delivery_fee')::numeric,(p->>'total')::numeric,p->'history') returning * $$;
+create function track_order(p_number text,p_phone text) returns setof orders language sql security definer as $$ select * from orders where order_number=p_number and customer_phone=p_phone $$;
+grant execute on function place_order, track_order to anon;
+alter publication supabase_realtime add table orders;
+-->
+<div id="shop">
+  <header class="top"><div class="wrap row between">
+    <a class="brand" href="#" onclick="go('home');return false">Olive Eatery</a>
+    <nav>
+      <button class="lnk" onclick="go('menu')">Menu</button>
+      <button class="lnk" onclick="go('track')">Track order</button>
+      <button class="btn sm" onclick="toggleCart(true)">Cart (<span id="cartN">0</span>)</button>
+    </nav>
+  </div></header>
+  <main id="main" class="wrap"></main>
+  <footer><div class="wrap row between gap">
+    <span>Clara Anna Fontein, Durbanville. Open daily 11:00 to 22:00. +27 (0)21 800 0000</span>
+    <button class="lnk" onclick="go('staff')">Staff login</button>
+  </div></footer>
+</div>
+<div id="staffApp" hidden></div>
+<div class="shade" id="shade" onclick="toggleCart(false)"></div>
+<aside class="drawer" id="drawer" aria-label="Your order">
+  <div class="row between"><h2>Your order</h2><button class="lnk" onclick="toggleCart(false)">Close</button></div>
+  <div id="cartLines"></div>
+  <div id="cartTotals"></div>
+  <form onsubmit="placeOrder(event)">
+    <label>Name<input id="cn" required autocomplete="name"></label>
+    <label>Phone number<input id="cp" type="tel" required autocomplete="tel"></label>
+    <label>How would you like it?
+      <select id="ful" onchange="fulChange()"><option value="collection">Collection</option><option value="delivery">Delivery on the estate (R25)</option><option value="dinein">Dine-in</option></select>
+    </label>
+    <label id="addrWrap" hidden><span id="addrLabel"></span><input id="addr"></label>
+    <label>Notes for the kitchen (optional)<input id="cnote"></label>
+    <button class="btn" id="placeBtn" style="width:100%">Place order</button>
+    <p class="small" style="margin-top:10px">You pay when you collect, on delivery or at the table.</p>
+  </form>
+</aside>
+<div id="toasts" aria-live="polite"></div>
+
+<script>
+const CFG={url:'https://qxtjlwdqmfexvgbjzlqp.supabase.co',key:'sb_publishable_rfxt9wmY_igyecNx1x0UoA_QM8UEohM'};
+const db=CFG.url&&CFG.key&&window.supabase?supabase.createClient(CFG.url,CFG.key):null;
+const FEE=25;
+let MENU=[
+['a1','Starters','Truffle and wild mushroom arancini','Crisp risotto balls with truffle cream and garlic aioli.',95],
+['a2','Starters','Crispy calamari','Lightly floured, served with lemon and chilli mayonnaise.',115],
+['a3','Starters','Woodfired focaccia','Garlic, rosemary and olive oil, straight from the oven.',75],
+['p1','Woodfired pizza','Margherita','San Marzano tomato, fior di latte, basil.',125],
+['p2','Woodfired pizza','Prosciutto and wild rocket','Parma ham, shaved parmesan, balsamic.',165],
+['p3','Woodfired pizza','Quattro formaggi','Mozzarella, gorgonzola, parmesan, fontina.',155],
+['m1','Mains','Slow-cooked Karoo lamb shank','Braised for eight hours with rosemary and garlic, parmesan mash.',265],
+['d1','Desserts','Tiramisu','Espresso-soaked savoiardi, mascarpone, cocoa.',85],
+['b1','Drinks','San Pellegrino 750ml','Sparkling mineral water.',55],
+['b2','Drinks','House red, carafe','Western Cape blend.',140]
+].map(([id,cat,name,desc,price])=>({id,cat,name,desc,price}));
+async function loadMenu(){
+  if(!db)return;
+  const {data,error}=await db.from('menu_items').select('*').eq('available',true).order('sort');
+  if(error){console.error('Menu load failed',error);return}
+  MENU=(data||[]).map(r=>({id:r.id,cat:r.category,name:r.name,desc:r.description||'',price:Number(r.price)}));
+  if(state.view==='menu')$('#main').innerHTML=menuV();
+}
+const FUL={collection:{ready:'Ready for collection',done:'Collected'},delivery:{ready:'Ready for delivery',done:'Delivered'},dinein:{ready:'Ready to serve',done:'Served'}};
+const STEPS=['received','accepted','preparing','ready','completed'];
+const SLABEL={received:'Awaiting acceptance',accepted:'Accepted',preparing:'In the kitchen',ready:'Ready',completed:'Done',cancelled:'Cancelled'};
+const GROUP={active:['received','accepted','preparing','ready'],received:['received'],accepted:['accepted'],preparing:['preparing'],ready:['ready'],done:['completed','cancelled']};
+const TABS=[['active','Active'],['received','Awaiting'],['accepted','Accepted'],['preparing','In the kitchen'],['ready','Ready'],['done','Done']];
+const state={view:'home',cat:'all',cart:{},sel:null,staff:null,filter:'active',orders:[],seen:null,soundEnabled:false,audioContext:null,alarmTimer:null,loadingOrders:false};
+
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const R=n=>'R'+Number(n).toFixed(2);
+const clock=i=>new Date(i).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+const ago=i=>{const m=Math.floor((Date.now()-new Date(i))/6e4);return m<1?'just now':m===1?'1 min ago':m<60?m+' min ago':clock(i)};
+const mem={};
+const LS={get(k,d){try{const v=localStorage.getItem(k);return v===null?(k in mem?mem[k]:d):JSON.parse(v)}catch{return k in mem?mem[k]:d}},set(k,v){mem[k]=v;try{localStorage.setItem(k,JSON.stringify(v))}catch{}}};
+const digits=s=>String(s||'').replace(/\D/g,'');
+
+/* Order store: Supabase when configured, otherwise the browser, shared by customer and staff views */
+const Store={
+  async create(o){
+    if(db){const{data,error}=await db.rpc('place_order',{p:o});if(error)throw error;return data}
+    const seq=LS.get('oe_seq',1000)+1;LS.set('oe_seq',seq);
+    const row={...o,id:'o'+Date.now(),order_number:'OE-'+seq,status:'received',created_at:new Date().toISOString()};
+    LS.set('oe_orders',[row,...LS.get('oe_orders',[])]);return row;
+  },
+  async all(){
+    if(db){const{data}=await db.from('orders').select('*').order('created_at',{ascending:false});return data||[]}
+    return LS.get('oe_orders',[]);
+  },
+  async find(num,phone){
+    if(db){const{data}=await db.rpc('track_order',{p_number:num.toUpperCase(),p_phone:phone});return(data&&data[0])||null}
+    return LS.get('oe_orders',[]).find(o=>o.order_number===num.toUpperCase()&&digits(o.customer_phone)===digits(phone))||null;
+  },
+  async setStatus(o,status){
+    const history={...(o.history||{}),[status]:new Date().toISOString()};
+    if(db){await db.from('orders').update({status,history}).eq('id',o.id);return}
+    const l=LS.get('oe_orders',[]),x=l.find(r=>r.id===o.id);
+    if(x){x.status=status;x.history=history;LS.set('oe_orders',l)}
+  }
+};
+
+/* Routing */
+function go(v){
+  state.view=v;try{history.replaceState(null,'','#'+v)}catch{}
+  render();
+}
+function render(){
+  const staff=state.view==='staff';
+  $('#shop').hidden=staff;$('#staffApp').hidden=!staff;
+  window.scrollTo(0,0);
+  if(staff){state.staff?staffShell():staffLogin();return}
+  $('#main').innerHTML=({home:homeV,menu:menuV,track:trackV}[state.view]||homeV)();
+  if(state.view==='track')renderTrack();
+}
+
+/* Customer: home and menu */
+const homeV=()=>`
+<section class="hero">
+  <h1>Woodfired pizza and slow-cooked mains, on the estate.</h1>
+  <p class="lead">Order for collection, delivery within Clara Anna Fontein, or to your table. Once we have your order you can follow it from the kitchen to your door.</p>
+  <div class="row gap"><button class="btn" onclick="go('menu')">See the menu</button><button class="btn alt" onclick="go('track')">Track an order</button></div>
+</section>
+<section class="info">
+  <div><h3>Opening hours</h3><p>Every day, 11:00 to 22:00.</p></div>
+  <div><h3>Find us</h3><p>Olive Eatery, Clara Anna Fontein, Durbanville.</p></div>
+  <div><h3>Paying</h3><p>Pay when you collect, on delivery or at the table. Delivery on the estate is R25.</p></div>
+</section>`;
+function menuV(){
+  const cats=[...new Set(MENU.map(m=>m.cat))];
+  const items=MENU.filter(m=>state.cat==='all'||m.cat===state.cat);
+  return `<h1>Menu</h1><div class="tabs">${['all',...cats].map(c=>`<button class="${state.cat===c?'on':''}" onclick="setCat('${c}')">${c==='all'?'Everything':c}</button>`).join('')}</div>`
+  +cats.filter(c=>items.some(m=>m.cat===c)).map(c=>`<h2 class="cat">${c}</h2>`+items.filter(m=>m.cat===c).map(m=>`
+  <div class="item"><div><h3>${m.name}</h3><p class="muted">${m.desc}</p></div>
+  <div class="right"><span class="price">${R(m.price)}</span><button class="btn sm" onclick="add('${m.id}')">Add</button></div></div>`).join('')).join('');
+}
+function setCat(c){state.cat=c;$('#main').innerHTML=menuV()}
+
+/* Customer: cart and checkout */
+function toggleCart(open){$('#drawer').classList.toggle('open',open);$('#shade').classList.toggle('on',open)}
+function add(id){state.cart[id]=(state.cart[id]||0)+1;paintCart();toast('Added '+MENU.find(m=>m.id===id).name)}
+function qty(id,d){state.cart[id]=(state.cart[id]||0)+d;if(state.cart[id]<=0)delete state.cart[id];paintCart()}
+const cartLines=()=>MENU.filter(m=>state.cart[m.id]).map(m=>({...m,qty:state.cart[m.id]}));
+function fulChange(){
+  const f=$('#ful').value,w=$('#addrWrap');
+  w.hidden=f==='collection';$('#addr').required=f!=='collection';
+  $('#addrLabel').textContent=f==='delivery'?'Delivery address':'Table number';
+  paintCart();
+}
+function paintCart(){
+  const lines=cartLines(),sub=lines.reduce((s,l)=>s+l.price*l.qty,0),fee=$('#ful').value==='delivery'&&lines.length?FEE:0;
+  $('#cartN').textContent=lines.reduce((s,l)=>s+l.qty,0);
+  $('#cartLines').innerHTML=lines.length?lines.map(l=>`<div class="cline"><div>${l.name}<div class="small">${R(l.price)}</div></div><div class="qty"><button aria-label="Remove one" onclick="qty('${l.id}',-1)">-</button><span>${l.qty}</span><button aria-label="Add one" onclick="qty('${l.id}',1)">+</button></div></div>`).join(''):'<p class="muted" style="padding:16px 0">Nothing in your order yet. Add something from the menu.</p>';
+  $('#cartTotals').innerHTML=`<div style="padding:12px 0">${fee?`<div class="tot"><span>Delivery</span><span>${R(fee)}</span></div>`:''}<div class="tot big"><span>Total</span><span>${R(sub+fee)}</span></div></div>`;
+}
+async function placeOrder(e){
+  e.preventDefault();
+  const lines=cartLines();if(!lines.length){toast('Add something from the menu first.');return}
+  const f=$('#ful').value,fee=f==='delivery'?FEE:0,btn=$('#placeBtn');
+  const o={customer_name:$('#cn').value.trim(),customer_phone:$('#cp').value.trim(),fulfilment:f,address:f==='collection'?'':$('#addr').value.trim(),notes:$('#cnote').value.trim(),
+    items:lines.map(l=>({id:l.id,name:l.name,quantity:l.qty,price:l.price})),delivery_fee:fee,total:lines.reduce((s,l)=>s+l.price*l.qty,0)+fee,history:{received:new Date().toISOString()}};
+  btn.disabled=true;
+  try{
+    const saved=await Store.create(o);
+    LS.set('oe_mine',[{n:saved.order_number,p:saved.customer_phone},...LS.get('oe_mine',[])]);
+    state.cart={};state.sel=saved.order_number;e.target.reset();fulChange();toggleCart(false);go('track');
+    toast('Order '+saved.order_number+' placed.');
+  }catch(err){console.error('Order submission failed:',err);toast('Order failed: '+(err?.message||'Please try again.'))}
+  btn.disabled=false;
+}
+
+/* Customer: order tracking */
+const trackV=()=>`<h1>Track your order</h1><div id="trackBody"></div>
+<form class="find" onsubmit="findOrder(event)"><h2>Find an order</h2><p class="muted" style="margin-bottom:14px">Use the order number and phone number from checkout.</p>
+<div class="row gap"><label>Order number<input id="fn" placeholder="OE-1001" required></label><label>Phone number<input id="fp" type="tel" required></label></div>
+<button class="btn alt">Find order</button></form>`;
+async function findOrder(e){
+  e.preventDefault();
+  const n=$('#fn').value.trim().toUpperCase(),p=$('#fp').value.trim(),o=await Store.find(n,p);
+  if(!o){toast('No order matches that number and phone. Check both and try again.');return}
+  const mine=LS.get('oe_mine',[]).filter(m=>m.n!==o.order_number);
+  LS.set('oe_mine',[{n:o.order_number,p},...mine]);state.sel=o.order_number;renderTrack();
+}
+async function renderTrack(){
+  const box=$('#trackBody');if(!box)return;
+  const mine=LS.get('oe_mine',[]);
+  if(!mine.length){box.innerHTML='<p class="muted" style="margin-bottom:40px">You haven’t placed an order on this device yet. <button class="lnk" onclick="go(\'menu\')">Browse the menu</button> or find an existing order below.</p>';return}
+  if(!mine.find(m=>m.n===state.sel))state.sel=mine[0].n;
+  const cur=mine.find(m=>m.n===state.sel),o=await Store.find(cur.n,cur.p);
+  if($('#trackBody')!==box)return;
+  const picker=mine.length>1?`<div class="tabs">${mine.map(m=>`<button class="${m.n===state.sel?'on':''}" onclick="state.sel='${esc(m.n)}';renderTrack()">${esc(m.n)}</button>`).join('')}</div>`:'';
+  if(!o){box.innerHTML=picker+'<p style="margin-bottom:40px">We can’t load this order right now. We’ll keep trying.</p>';return}
+  const f=FUL[o.fulfilment]||FUL.collection,h=o.history||{},idx=STEPS.indexOf(o.status);
+  const names={received:'Order received',accepted:'Order accepted',preparing:'Being prepared',ready:f.ready,completed:f.done};
+  const msg={received:'We’ve got your order. The kitchen will confirm it shortly.',accepted:'Your order has been accepted by Olive Eatery. The kitchen will start preparing it shortly.',preparing:'The kitchen is making your order now.',ready:f.ready+'. '+(o.fulfilment==='collection'?'Come on in whenever you’re ready.':o.fulfilment==='delivery'?'It’s on its way to you.':'It’s coming to your table.'),completed:'All done. Enjoy your meal.',cancelled:'This order was cancelled. Call us on +27 (0)21 800 0000 if you weren’t expecting that.'}[o.status];
+  const steps=o.status==='cancelled'?'':`<ol class="steps">${STEPS.map((s,i)=>{const done=o.status==='completed'?i<=idx:i<idx;return `<li class="${done?'done':i===idx?'now':''}"><b>${names[s]}</b>${h[s]?`<div class="small">${clock(h[s])}</div>`:''}</li>`}).join('')}</ol>`;
+  box.innerHTML=picker+`<div class="panel"><div class="row between gap"><h2 style="margin:0">${esc(o.order_number)}</h2><span class="small">Placed at ${clock(o.created_at)}</span></div>
+  <p style="margin-top:8px">${msg}</p>${steps}
+  <ul class="lines" style="margin-top:16px">${(o.items||[]).map(i=>`<li><span>${i.quantity} × ${esc(i.name)}</span><span>${R(i.price*i.quantity)}</span></li>`).join('')}</ul>
+  <div class="tot big" style="margin:12px 0 0"><span>Total</span><span>${R(o.total)}</span></div></div>`;
+}
+
+/* Staff */
+function staffLogin(){
+  $('#staffApp').innerHTML=`<div class="login"><h1 style="font-size:2rem">Staff sign in</h1>
+  <form onsubmit="login(event)"><label>Email<input id="se" type="email" required autocomplete="username"></label>
+  <label>Password<input id="sp" type="password" required autocomplete="current-password"></label>
+  <button class="btn" style="width:100%">Sign in</button></form>
+  ${db?'':'<p class="small" style="margin-top:12px">Test mode: any email and password signs in.</p>'}
+  <p style="margin-top:20px"><button class="lnk small" onclick="go('home')">Back to the customer site</button></p></div>`;
+}
+async function login(e){
+  e.preventDefault();const email=$('#se').value;
+  if(db){const{error}=await db.auth.signInWithPassword({email,password:$('#sp').value});if(error){toast('Those details didn’t match. Try again.');return}}
+  state.staff={email};staffShell();
+}
+async function logout(){if(db)await db.auth.signOut();state.staff=null;go('home')}
+function staffShell(){
+  $('#staffApp').innerHTML=`<header class="bar"><div class="wrap row between gap"><strong class="brand">Olive Eatery staff</strong>
+  <div class="row gap"><span class="small">${esc(state.staff.email)}</span><button class="lnk" onclick="go('home')">Customer site</button><button class="lnk" onclick="logout()">Sign out</button></div></div></header>
+  <div class="wrap"><div class="row between gap"><div id="summary" class="summary"></div><button class="btn sm alt" id="alertBtn" onclick="toggleAlerts()">Enable loud order alerts</button></div><p class="small" id="alertHelp" style="margin:-4px 0 12px">Enable sound once on this device to hear new orders.</p><div class="tabs" id="stabs" style="margin-top:16px"></div><div id="slist" class="grid"></div></div>`;
+  state.seen=null;loadStaff();
+}
+async function loadStaff(){
+  if(state.loadingOrders)return;
+  state.loadingOrders=true;
+  try{
+    const list=await Store.all();
+    if(state.seen){
+      const fresh=list.filter(o=>!state.seen.has(o.id));
+      fresh.forEach(o=>toast('New order '+o.order_number+' from '+o.customer_name));
+    }
+    state.seen=new Set(list.map(o=>o.id));state.orders=list;syncPendingAlarm();paintStaff();
+  }catch(err){
+    console.error('Could not load orders',err);
+    if($('#slist'))$('#slist').innerHTML='<p class="muted empty">Orders could not be loaded. Check your connection and sign-in, then refresh.</p>';
+    toast('Could not load orders. Please refresh and try again.');
+  }finally{state.loadingOrders=false}
+}
+async function toggleAlerts(){
+  try{
+    const AC=window.AudioContext||window.webkitAudioContext;
+    if(!AC){toast('This browser does not support sound alerts.');return}
+    if(!state.audioContext)state.audioContext=new AC();
+    if(state.audioContext.state==='suspended')await state.audioContext.resume();
+    state.soundEnabled=true;
+    const b=$('#alertBtn'),h=$('#alertHelp');
+    if(b)b.textContent='Sound alerts are on';
+    if(h)h.textContent='Sound is enabled on this device. Keep this staff page open to hear new-order alerts.';
+    syncPendingAlarm();
+    if(!state.orders.some(o=>o.status==='received'))beepNewOrder();
+    toast('Loud order alerts enabled.');
+  }catch(err){console.error(err);toast('Could not enable sound. Check your browser sound settings.')}
+}
+function syncPendingAlarm(){
+  const pending=state.orders.some(o=>o.status==='received');
+  if(pending&&state.soundEnabled&&state.audioContext&&!state.alarmTimer){
+    beepNewOrder();
+    state.alarmTimer=setInterval(()=>{
+      if(!state.orders.some(o=>o.status==='received')){clearInterval(state.alarmTimer);state.alarmTimer=null;return}
+      beepNewOrder();
+    },2600);
+  }else if(!pending&&state.alarmTimer){
+    clearInterval(state.alarmTimer);state.alarmTimer=null;
+  }
+}
+function beepNewOrder(){
+  if(!state.soundEnabled||!state.audioContext)return;
+  const ctx=state.audioContext,now=ctx.currentTime;
+  for(let i=0;i<6;i++){
+    const start=now+i*0.34,osc=ctx.createOscillator(),gain=ctx.createGain();
+    osc.type='square';osc.frequency.value=i%2?740:1040;
+    gain.gain.setValueAtTime(0.0001,start);
+    gain.gain.exponentialRampToValueAtTime(0.8,start+0.025);
+    gain.gain.setValueAtTime(0.8,start+0.16);
+    gain.gain.exponentialRampToValueAtTime(0.0001,start+0.23);
+    osc.connect(gain);gain.connect(ctx.destination);
+    osc.start(start);osc.stop(start+0.24);
+  }
+}
+function setFilter(k){state.filter=k;paintStaff()}
+function paintStaff(){
+  if(!$('#slist'))return;
+  const L=state.orders,cnt=k=>L.filter(o=>GROUP[k].includes(o.status)).length;
+  $('#summary').textContent=`${cnt('received')} awaiting acceptance, ${cnt('accepted')} accepted, ${cnt('preparing')} in the kitchen, ${cnt('ready')} ready.`;
+  $('#stabs').innerHTML=TABS.map(([k,l])=>`<button class="${state.filter===k?'on':''}" onclick="setFilter('${k}')">${l} (${cnt(k)})</button>`).join('');
+  const rows=L.filter(o=>GROUP[state.filter].includes(o.status)).sort((a,b)=>state.filter==='done'?new Date(b.created_at)-new Date(a.created_at):new Date(a.created_at)-new Date(b.created_at));
+  $('#slist').innerHTML=rows.length?rows.map(ticket).join(''):`<p class="muted empty">${state.filter==='active'?'No active orders. New orders from the website appear here as they arrive.':'Nothing here.'}</p>`;
+}
+function ticket(o){
+  const f=FUL[o.fulfilment]||FUL.collection;
+  const where=o.fulfilment==='dinein'?'Dine-in, table '+esc(o.address||'not given'):o.fulfilment==='delivery'?'Delivery to '+esc(o.address):'Collection';
+  const c={received:'--new',preparing:'--cook',ready:'--ready'}[o.status]||'--muted';
+  return `<article class="ticket" style="--c:var(${c})">
+  <div class="row between"><div><strong>${esc(o.order_number)}</strong> <span class="small">${ago(o.created_at)}</span></div><span class="st">${SLABEL[o.status]}</span></div>
+  <div><div>${esc(o.customer_name)}, <a href="tel:${esc(o.customer_phone)}">${esc(o.customer_phone)}</a></div><div class="muted">${where}</div></div>
+  ${o.notes?`<p class="note">Note: ${esc(o.notes)}</p>`:''}
+  <ul class="lines">${(o.items||[]).map(i=>`<li><span>${i.quantity} × ${esc(i.name)}</span><span>${R(i.price*i.quantity)}</span></li>`).join('')}</ul>
+  <div class="row between"><span class="small">${o.delivery_fee>0?'Includes delivery '+R(o.delivery_fee):''}</span><strong>${R(o.total)}</strong></div>
+  <div class="row gap">${actions(o,f)}</div></article>`;
+}
+function actions(o,f){
+  const b=(s,l,cls='')=>`<button class="btn sm ${cls}" onclick="setStatus('${o.id}','${s}')">${l}</button>`;
+  if(o.status==='received')return b('cancelled','Decline','danger')+b('accepted','Accept order');
+  if(o.status==='accepted')return b('cancelled','Cancel','danger')+b('preparing','Start preparing');
+  if(o.status==='preparing')return b('cancelled','Cancel','danger')+b('ready','Mark ready');
+  if(o.status==='ready')return b('completed','Mark '+f.done.toLowerCase());
+  return '';
+}
+async function setStatus(id,s){
+  const o=state.orders.find(x=>x.id===id);if(!o)return;
+  await Store.setStatus(o,s);loadStaff();
+}
+
+/* Shared helpers and live updates */
+function toast(m){const t=document.createElement('div');t.className='toast';t.textContent=m;$('#toasts').append(t);setTimeout(()=>t.remove(),3500)}
+function refresh(){
+  if(state.view==='track')renderTrack();
+  if(state.view==='staff'&&state.staff)loadStaff();
+}
+addEventListener('storage',e=>{if(e.key==='oe_orders')refresh()});
+setInterval(refresh,8000);
+if(db){
+  db.channel('olive-customer')
+    .on('postgres_changes',{event:'*',schema:'public',table:'orders'},refresh)
+    .on('postgres_changes',{event:'*',schema:'public',table:'menu_items'},loadMenu)
+    .subscribe();
+}
+
+const h=location.hash.slice(1);
+state.view=['menu','track','staff'].includes(h)?h:'home';
+fulChange();render();loadMenu();
+</script>
+</body>
+</html>
